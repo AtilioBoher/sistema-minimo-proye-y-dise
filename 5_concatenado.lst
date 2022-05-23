@@ -1,0 +1,92 @@
+                        ; Origin set to 00000H, EOF = 0000DH
+   0000                 		ORG  00000H
+                        
+                        ; CPU Type:
+                        		CPU 1802
+                        
+                        ; Labels:
+                        
+                        ; Register Definitions:
+   0000                 R0		EQU 0
+   0001                 R1		EQU 1
+   0002                 R2		EQU 2
+   0003                 R3		EQU 3
+   0004                 R4		EQU 4
+   0005                 R5		EQU 5
+   0006                 R6		EQU 6
+   0007                 R7		EQU 7
+   0008                 R8		EQU 8
+   0009                 R9		EQU 9
+   000a                 RA		EQU 10
+   000b                 RB		EQU 11
+   000c                 RC		EQU 12
+   000d                 RD		EQU 13
+   000e                 RE		EQU 14
+   000f                 RF		EQU 15
+                        
+                        ; Start code segment
+                        ;------------------------------------------------------
+   0000                 INICIO1
+   0000   7a            		REQ
+   0001                 START1
+   0001   f8 10         		LDI  010H ;al parecer el cero va adelante para indicar que es hexadecimal
+   0003   b1            		PHI  R1
+   0004                 LOOP1
+   0004   21            		DEC  R1
+   0005   91            		GHI  R1
+   0006   3a 04         		BNZ  LOOP1
+   0008   31 00         		BQ   INICIO1
+   000a   7b            		SEQ
+   000b   30 01         		BR   START1
+                        
+                        ;----------------------------------------------------
+   0100                 		ORG  00100H
+   0100                 START2
+   0100   7a            		REQ
+   0101                 ENCENDIDO2
+   0101   3c 00         		BN1  START2
+   0103   7b            		SEQ
+   0104   30 01         		BR   ENCENDIDO2
+                        
+                        
+                        ;-------------------------------------------------------
+   0200                 		ORG  00200H
+   0200                 START3
+   0200   7a            		REQ
+   0201                 INICIO3
+   0201   f8 10         		LDI  10H
+   0203   b1            		PHI  R1
+   0204                 LOOP3
+   0204   21            		DEC  R1
+   0205   91            		GHI  R1
+   0206   3a 04         		BNZ  LOOP3
+   0208   31 00         		BQ   START3
+   020a   7b            		SEQ
+   020b                 ENCENDIDO3
+   020b   3c 00         		BN1  START3
+   020d   7b            		SEQ
+   020e   30 01         		BR   INICIO3
+                        
+                        ;-----------------------------------------------------------
+   0300                 		ORG   00300H
+   0300                 START4
+   0300   f8 05         		LDI  05H  
+   0302                 WAIT4
+   0302   3c 02         		BN1  WAIT4    
+   0304                 HOLD4
+   0304   37 04         		B4   HOLD4
+   0306   ff 01         		SMI  01H
+   0308   3a 02         		BNZ  WAIT4
+   030a                 ENCENDIDO4
+   030a   7b            		SEQ
+   030b   30 0a         		BR   ENCENDIDO4
+   030d                 		END
+0101  ENCENDIDO2    020b  ENCENDIDO3    030a  ENCENDIDO4    0304  HOLD4     
+0000  INICIO1       0201  INICIO3       0004  LOOP1         0204  LOOP3     
+0000  R0            0001  R1            0002  R2            0003  R3        
+0004  R4            0005  R5            0006  R6            0007  R7        
+0008  R8            0009  R9            000a  RA            000b  RB        
+000c  RC            000d  RD            000e  RE            000f  RF        
+0001  START1        0100  START2        0200  START3        0300  START4    
+0302  WAIT4         
+
