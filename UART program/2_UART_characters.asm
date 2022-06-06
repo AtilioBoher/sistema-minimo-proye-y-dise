@@ -1,4 +1,4 @@
-; Origin set to 00000H, EOF = 0000DH
+; Origin set to 00000H
 		ORG  00000H
 
 ; CPU Type:
@@ -25,50 +25,6 @@ RE		EQU 14
 RF		EQU 15
 
 ; Start code segment
-;------------------------------------------------------
-INICIO1
-		REQ
-START1
-		LDI  010H ;al parecer el cero va adelante para indicar que es hexadecimal
-		PHI  R1
-LOOP1
-		DEC  R1
-		GHI  R1
-		BNZ  LOOP1
-		BQ   INICIO1
-		SEQ
-		BR   START1
-
-;----------------------------------------------------
-		ORG  00100H
-START2
-		REQ
-ENCENDIDO2
-		BN1  START2
-		SEQ
-		BR   ENCENDIDO2
-
-
-;-------------------------------------------------------
-		ORG  00200H
-START3
-		REQ
-INICIO3
-		LDI  10H
-		PHI  R1
-LOOP3
-		DEC  R1
-		GHI  R1
-		BNZ  LOOP3
-		BQ   START3
-		SEQ
-ENCENDIDO3
-		BN1  START3
-		SEQ
-		BR   INICIO3
-
-;-----------------------------------------------------------
-		ORG   00300H
 
 ; antes de empezar suponemos que el dato a enviar está cargado en el registro R2.1 (porque R0 es el contador de programa)
 INICIO				; esta parte son solo definiciones
@@ -118,7 +74,7 @@ SEND	SEP R8			; llamo a la SUB que transmite lo que está en R2
 
 
 ;---------subrutina de trasmisión de datos-------------------------
-		ORG  0033FH	; se le sumó 0300H porque el código empieza allí
+		ORG  0003FH
 BACK1	SEP R0		; retorna a la subrutina principal
 TRANSM
 		SEQ			; Q = 1 (línea en estado inactivo)
@@ -148,7 +104,7 @@ ESCERO	REQ			; salida Q igual a 0
 
 
 ;---------subrutina de ratardo de tranmisión-------------------------
-		ORG  0035FH		; se le sumó 0300H porque el código empieza allí
+		ORG  0005FH
 BACK2	SEP R8			; retorna a subrutina de transmisión 1-Byte	2-Machine Cycles	1 time
 DELAY1
 		LDI  050H		; carga el valor inmediato en D		2-Byte	2-Machine Cycles	1 time
@@ -161,7 +117,7 @@ TIMER1
 
 
 ;---------subrutina de retardo del programa principal-------------------------
-		ORG  0036FH		; se le sumó 0300H porque el código empieza allí
+		ORG  0006FH
 BACK3	SEP R0			; retorna a la rutina principal
 DELAY2
 		LDI  0FFH		; carga el valor inmediato en D

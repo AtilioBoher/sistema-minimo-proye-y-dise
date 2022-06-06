@@ -1,4 +1,4 @@
-; Origin set to 00000H, EOF = 0000DH
+; Origin set to 00000H
 		ORG  00000H
 
 ; CPU Type:
@@ -25,91 +25,25 @@ RE		EQU 14
 RF		EQU 15
 
 ; Start code segment
-;------------------------------------------------------
-INICIO1
-		REQ
-START1
-		LDI  010H ;al parecer el cero va adelante para indicar que es hexadecimal
-		PHI  R1
-LOOP1
-		DEC  R1
-		GHI  R1
-		BNZ  LOOP1
-		BQ   INICIO1
-		SEQ
-		BR   START1
-
-;----------------------------------------------------
-		ORG  00100H
-START2
-		REQ
-ENCENDIDO2
-		BN1  START2
-		SEQ
-		BR   ENCENDIDO2
-
-
-;-------------------------------------------------------
-		ORG  00200H
-START3
-		REQ
-INICIO3
-		LDI  10H
-		PHI  R1
-LOOP3
-		DEC  R1
-		GHI  R1
-		BNZ  LOOP3
-		BQ   START3
-		SEQ
-ENCENDIDO3
-		BN1  START3
-		SEQ
-		BR   INICIO3
-
-;-----------------------------------------------------------
-		ORG   00300H
 
 ; antes de empezar suponemos que el dato a enviar está cargado en el registro R2.1 (porque R0 es el contador de programa)
 INICIO				; esta parte son solo definiciones
 		LDI 00H
 		PHI R8
-		LDI 40H
-		PLO R8		; se cargó 0040H en R8, que es la SUB de transmisión
+		LDI 20H
+		PLO R8		; se cargó 0020H en R8, que es la SUB de transmisión
 		LDI 00H
 		PHI R9
-		LDI 60H
-		PLO R9		; se cargó 0060H en R9, que es la SUB de DELAY1 (para la SUB de transmisión)
+		LDI 40H
+		PLO R9		; se cargó 0040H en R9, que es la SUB de DELAY1 (para la SUB de transmisión)
 		LDI 00H
 		PHI RA
-		LDI 70H
-		PLO RA		; se cargó 0070H en RA, que es la SUB de DELAY2 (para el programa principal)
+		LDI 50H
+		PLO RA		; se cargó 0050H en RA, que es la SUB de DELAY2 (para el programa principal)
 ;acá está la rutina principal
 		SEQ				; empezamos ponindo la línea estado inactivo
-LOOP	LDI 1000001B	; caracter ascii A (mayúscula)
-		PHI R4			; cargo el valor de D a R4 (para tener guardado el último caracter enviado)
-		PHI R2			; cargo el valor de D a R2 (para la subrutina)
-		LDI 07H			; cargo 7 en D
-		PLO R5			; cargo D en R5.0 (para hacer 7 repeticiones en la rutina SEND)
-SEND	SEP R8			; llamo a la SUB que transmite lo que está en R2
-		SEP RA			; llamo a la SUB DELAY2
-		SEP RA			; llamo a la SUB DELAY2
-		SEP RA			; llamo a la SUB DELAY2
-		INC R4			; incremento R4 (paso al siguiente caracter)
-		GHI R4			; carga R4.1 en D
-		PHI R2			; carga D en R2.1
-		DEC R5			; decremento R5
-		GLO R5			; carga la parte baja de R3 en D
-		BNZ SEND		; salta si D != 0 (va a saltar 7 veces, enviando ABCDEFG)
-		; envio CRLF para hacer el salto de línea
-		LDI 1101B		; caracter ascii CR (carriage return)
-		PHI R2			; cargo el valor de D a R2 (para la subrutina)
-		SEP R8			; llamo a la SUB que transmite lo que está en R2
-		SEP RA			; llamo a la SUB DELAY2
-		SEP RA			; llamo a la SUB DELAY2
-		SEP RA			; llamo a la SUB DELAY2
-		LDI 1010B		; caracter ascii  (line feed)
-		PHI R2			; cargo el valor de D a R2 (para la subrutina)
+LOOP	LDI 10101010B	; byte con bits alternantes en D
+		PHI R2			; cargo el valor de D a R2
 		SEP R8			; llamo a la SUB que transmite lo que está en R2
 		SEP RA			; llamo a la SUB DELAY2
 		SEP RA			; llamo a la SUB DELAY2
@@ -118,7 +52,7 @@ SEND	SEP R8			; llamo a la SUB que transmite lo que está en R2
 
 
 ;---------subrutina de trasmisión de datos-------------------------
-		ORG  0033FH	; se le sumó 0300H porque el código empieza allí
+		ORG  0001FH
 BACK1	SEP R0		; retorna a la subrutina principal
 TRANSM
 		SEQ			; Q = 1 (línea en estado inactivo)
@@ -148,7 +82,7 @@ ESCERO	REQ			; salida Q igual a 0
 
 
 ;---------subrutina de ratardo de tranmisión-------------------------
-		ORG  0035FH		; se le sumó 0300H porque el código empieza allí
+		ORG  0003FH
 BACK2	SEP R8			; retorna a subrutina de transmisión 1-Byte	2-Machine Cycles	1 time
 DELAY1
 		LDI  050H		; carga el valor inmediato en D		2-Byte	2-Machine Cycles	1 time
@@ -161,7 +95,7 @@ TIMER1
 
 
 ;---------subrutina de retardo del programa principal-------------------------
-		ORG  0036FH		; se le sumó 0300H porque el código empieza allí
+		ORG  0004FH
 BACK3	SEP R0			; retorna a la rutina principal
 DELAY2
 		LDI  0FFH		; carga el valor inmediato en D
