@@ -86,7 +86,7 @@ INICIO				; esta parte son solo definiciones
 		PLO RA		; se cargó 0070H en RA, que es la SUB de DELAY2 (para el programa principal)
 ;acá está la rutina principal
 		SEQ				; empezamos ponindo la línea estado inactivo
-LOOP	LDI 1000001B	; caracter ascii A (mayúscula)
+LOOP	LDI 65D			; caracter ascii A (mayúscula)
 		PHI R4			; cargo el valor de D a R4 (para tener guardado el último caracter enviado)
 		PHI R2			; cargo el valor de D a R2 (para la subrutina)
 		LDI 07H			; cargo 7 en D
@@ -101,14 +101,14 @@ SEND	SEP R8			; llamo a la SUB que transmite lo que está en R2
 		DEC R5			; decremento R5
 		GLO R5			; carga la parte baja de R3 en D
 		BNZ SEND		; salta si D != 0 (va a saltar 7 veces, enviando ABCDEFG)
-		; envio CRLF para hacer el salto de línea
-		LDI 1101B		; caracter ascii CR (carriage return)
+	; envio CRLF para hacer el salto de línea
+		LDI 13D			; caracter ascii CR (carriage return)
 		PHI R2			; cargo el valor de D a R2 (para la subrutina)
 		SEP R8			; llamo a la SUB que transmite lo que está en R2
 		SEP RA			; llamo a la SUB DELAY2
 		SEP RA			; llamo a la SUB DELAY2
 		SEP RA			; llamo a la SUB DELAY2
-		LDI 1010B		; caracter ascii  (line feed)
+		LDI 10D			; caracter ascii  (line feed)
 		PHI R2			; cargo el valor de D a R2 (para la subrutina)
 		SEP R8			; llamo a la SUB que transmite lo que está en R2
 		SEP RA			; llamo a la SUB DELAY2

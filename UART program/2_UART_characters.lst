@@ -42,7 +42,7 @@
    0011   aa            		PLO RA		; se cargó 0070H en RA, que es la SUB de DELAY2 (para el programa principal)
                         ;acá está la rutina principal
    0012   7b            		SEQ				; empezamos ponindo la línea estado inactivo
-   0013   f8 41         LOOP	LDI 1000001B	; caracter ascii A (mayúscula)
+   0013   f8 41         LOOP	LDI 65D			; caracter ascii A (mayúscula)
    0015   b4            		PHI R4			; cargo el valor de D a R4 (para tener guardado el último caracter enviado)
    0016   b2            		PHI R2			; cargo el valor de D a R2 (para la subrutina)
    0017   f8 07         		LDI 07H			; cargo 7 en D
@@ -57,14 +57,14 @@
    0021   25            		DEC R5			; decremento R5
    0022   85            		GLO R5			; carga la parte baja de R3 en D
    0023   3a 1a         		BNZ SEND		; salta si D != 0 (va a saltar 7 veces, enviando ABCDEFG)
-                        		; envio CRLF para hacer el salto de línea
-   0025   f8 0d         		LDI 1101B		; caracter ascii CR (carriage return)
+                        	; envio CRLF para hacer el salto de línea
+   0025   f8 0d         		LDI 13D			; caracter ascii CR (carriage return)
    0027   b2            		PHI R2			; cargo el valor de D a R2 (para la subrutina)
    0028   d8            		SEP R8			; llamo a la SUB que transmite lo que está en R2
    0029   da            		SEP RA			; llamo a la SUB DELAY2
    002a   da            		SEP RA			; llamo a la SUB DELAY2
    002b   da            		SEP RA			; llamo a la SUB DELAY2
-   002c   f8 0a         		LDI 1010B		; caracter ascii  (line feed)
+   002c   f8 0a         		LDI 10D			; caracter ascii  (line feed)
    002e   b2            		PHI R2			; cargo el valor de D a R2 (para la subrutina)
    002f   d8            		SEP R8			; llamo a la SUB que transmite lo que está en R2
    0030   da            		SEP RA			; llamo a la SUB DELAY2
