@@ -27,45 +27,45 @@
                         ; Start code segment
                         ;------------------------------------------------------
    0000                 INICIO1
-   0000   7a            		REQ
+   0000   7a            		REQ				; reset Q
    0001                 START1
-   0001   f8 10         		LDI  010H ;al parecer el cero va adelante para indicar que es hexadecimal
-   0003   b1            		PHI  R1
+   0001   f8 10         		LDI  010H 		; al parecer el cero va adelante para indicar que es hexadecimal
+   0003   b1            		PHI  R1			; carga el valor de D a R1.1
    0004                 LOOP1
-   0004   21            		DEC  R1
-   0005   91            		GHI  R1
-   0006   3a 04         		BNZ  LOOP1
-   0008   31 00         		BQ   INICIO1
-   000a   7b            		SEQ
-   000b   30 01         		BR   START1
+   0004   21            		DEC  R1			; decrementa R1.1
+   0005   91            		GHI  R1			; carga R1.1 en D
+   0006   3a 04         		BNZ  LOOP1		; salta si D es 0
+   0008   31 00         		BQ   INICIO1	; salta si Q == 1 (para que Q conmute)
+   000a   7b            		SEQ				; set Q
+   000b   30 01         		BR   START1		; salto incondicional
                         
                         ;----------------------------------------------------
    0100                 		ORG  00100H
    0100                 START2
-   0100   7a            		REQ
+   0100   7a            		REQ				; reset Q
    0101                 ENCENDIDO2
-   0101   3c 00         		BN1  START2
-   0103   7b            		SEQ
-   0104   30 01         		BR   ENCENDIDO2
+   0101   3c 00         		BN1  START2		; salta si EF1 está en estado bajo
+   0103   7b            		SEQ				; set Q
+   0104   30 01         		BR   ENCENDIDO2	; salto incondicional
                         
                         
                         ;-------------------------------------------------------
    0200                 		ORG  00200H
    0200                 START3
-   0200   7a            		REQ
+   0200   7a            		REQ				; reset Q
    0201                 INICIO3
-   0201   f8 10         		LDI  10H
-   0203   b1            		PHI  R1
+   0201   f8 10         		LDI  10H		; carga 10 en D
+   0203   b1            		PHI  R1			; carga el valor de D en R1.1
    0204                 LOOP3
-   0204   21            		DEC  R1
-   0205   91            		GHI  R1
-   0206   3a 04         		BNZ  LOOP3
-   0208   31 00         		BQ   START3
-   020a   7b            		SEQ
+   0204   21            		DEC  R1			; decremanta R1
+   0205   91            		GHI  R1			; carga el valor de R1.1 en D
+   0206   3a 04         		BNZ  LOOP3		; salta si D = 0
+   0208   31 00         		BQ   START3		; salta si Q = 1
+   020a   7b            		SEQ				; set Q
    020b                 ENCENDIDO3
-   020b   3c 00         		BN1  START3
-   020d   7b            		SEQ
-   020e   30 01         		BR   INICIO3
+   020b   3c 00         		BN1  START3		; salta si EF1 está en estado bajo
+   020d   7b            		SEQ				; set Q
+   020e   30 01         		BR   INICIO3	; salto incondicional
                         
                         ;-----------------------------------------------------------
    0300                 		ORG   00300H

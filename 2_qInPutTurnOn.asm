@@ -26,9 +26,9 @@ RF		EQU 15
 
 ; Start code segment
 START
-		REQ
+		REQ				; reset Q
 ENCENDIDO
-		BN4  START
-		SEQ
-		BR   ENCENDIDO
+		BN4  START		; salta si EF4 está en estado bajo
+		SEQ				; set Q
+		BR   ENCENDIDO	; salto incondicional
 		END

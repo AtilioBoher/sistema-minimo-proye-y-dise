@@ -26,11 +26,11 @@
                         
                         ; Start code segment
    0000                 START
-   0000   7a            		REQ
+   0000   7a            		REQ				; reset Q
    0001                 ENCENDIDO
-   0001   3f 00         		BN4  START
-   0003   7b            		SEQ
-   0004   30 01         		BR   ENCENDIDO
+   0001   3f 00         		BN4  START		; salta si EF4 está en estado bajo
+   0003   7b            		SEQ				; set Q
+   0004   30 01         		BR   ENCENDIDO	; salto incondicional
    0006                 		END
 0001  ENCENDIDO     0000  R0            0001  R1            0002  R2        
 0003  R3            0004  R4            0005  R5            0006  R6        

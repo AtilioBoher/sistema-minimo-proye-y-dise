@@ -27,45 +27,45 @@ RF		EQU 15
 ; Start code segment
 ;------------------------------------------------------
 INICIO1
-		REQ
+		REQ				; reset Q
 START1
-		LDI  010H ;al parecer el cero va adelante para indicar que es hexadecimal
-		PHI  R1
+		LDI  010H 		; al parecer el cero va adelante para indicar que es hexadecimal
+		PHI  R1			; carga el valor de D a R1.1
 LOOP1
-		DEC  R1
-		GHI  R1
-		BNZ  LOOP1
-		BQ   INICIO1
-		SEQ
-		BR   START1
+		DEC  R1			; decrementa R1.1
+		GHI  R1			; carga R1.1 en D
+		BNZ  LOOP1		; salta si D es 0
+		BQ   INICIO1	; salta si Q == 1 (para que Q conmute)
+		SEQ				; set Q
+		BR   START1		; salto incondicional
 
 ;----------------------------------------------------
 		ORG  00100H
 START2
-		REQ
+		REQ				; reset Q
 ENCENDIDO2
-		BN1  START2
-		SEQ
-		BR   ENCENDIDO2
+		BN1  START2		; salta si EF1 está en estado bajo
+		SEQ				; set Q
+		BR   ENCENDIDO2	; salto incondicional
 
 
 ;-------------------------------------------------------
 		ORG  00200H
 START3
-		REQ
+		REQ				; reset Q
 INICIO3
-		LDI  10H
-		PHI  R1
+		LDI  10H		; carga 10 en D
+		PHI  R1			; carga el valor de D en R1.1
 LOOP3
-		DEC  R1
-		GHI  R1
-		BNZ  LOOP3
-		BQ   START3
-		SEQ
+		DEC  R1			; decremanta R1
+		GHI  R1			; carga el valor de R1.1 en D
+		BNZ  LOOP3		; salta si D = 0
+		BQ   START3		; salta si Q = 1
+		SEQ				; set Q
 ENCENDIDO3
-		BN1  START3
-		SEQ
-		BR   INICIO3
+		BN1  START3		; salta si EF1 está en estado bajo
+		SEQ				; set Q
+		BR   INICIO3	; salto incondicional
 
 ;-----------------------------------------------------------
 		ORG   00300H

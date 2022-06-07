@@ -26,18 +26,18 @@ RF		EQU 15
 
 ; Start code segment
 START
-		REQ
+		REQ			; reset Q
 INICIO
-		LDI  10H
-		PHI  R1
+		LDI  10H	; carga 10 en D
+		PHI  R1		; carga el valor de D en R1.1
 LOOP
-		DEC  R1
-		GHI  R1
-		BNZ  LOOP
-		BQ   START
-		SEQ
+		DEC  R1		; decremanta R1
+		GHI  R1		; carga el valor de R1.1 en D
+		BNZ  LOOP	; salta si D = 0
+		BQ   START	; salta si Q = 1
+		SEQ			; set Q
 ENCENDIDO
-		BN4  START
-		SEQ
-		BR   INICIO 
+		BN4  START	; salta si EF4 está en estado bajo
+		SEQ			; set Q
+		BR   INICIO	; salto incondicional
 		END
