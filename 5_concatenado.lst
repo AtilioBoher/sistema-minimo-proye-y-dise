@@ -87,34 +87,28 @@
                         ;acá está la rutina principal
    0312   7b            		SEQ				; empezamos ponindo la línea estado inactivo
    0313   f8 41         LOOP	LDI 65D			; caracter ascii A (mayúscula)
-   0315   b4            		PHI R4			; cargo el valor de D a R4 (para tener guardado el último caracter enviado)
+   0315   a4            		PLO R4			; cargo el valor de D a R4 (para tener guardado el último caracter enviado)
    0316   b2            		PHI R2			; cargo el valor de D a R2 (para la subrutina)
    0317   f8 07         		LDI 07H			; cargo 7 en D
    0319   a5            		PLO R5			; cargo D en R5.0 (para hacer 7 repeticiones en la rutina SEND)
    031a   d8            SEND	SEP R8			; llamo a la SUB que transmite lo que está en R2
    031b   da            		SEP RA			; llamo a la SUB DELAY2
-   031c   da            		SEP RA			; llamo a la SUB DELAY2
-   031d   da            		SEP RA			; llamo a la SUB DELAY2
-   031e   14            		INC R4			; incremento R4 (paso al siguiente caracter)
-   031f   94            		GHI R4			; carga R4.1 en D
-   0320   b2            		PHI R2			; carga D en R2.1
-   0321   25            		DEC R5			; decremento R5
-   0322   85            		GLO R5			; carga la parte baja de R3 en D
-   0323   3a 1a         		BNZ SEND		; salta si D != 0 (va a saltar 7 veces, enviando ABCDEFG)
+   031c   14            		INC R4			; incremento R4 (paso al siguiente caracter)
+   031d   84            		GLO R4			; carga R4.1 en D
+   031e   b2            		PHI R2			; carga D en R2.1
+   031f   25            		DEC R5			; decremento R5
+   0320   85            		GLO R5			; carga la parte baja de R3 en D
+   0321   3a 1a         		BNZ SEND		; salta si D != 0 (va a saltar 7 veces, enviando ABCDEFG)
                         	; envio CRLF para hacer el salto de línea
-   0325   f8 0d         		LDI 13D			; caracter ascii CR (carriage return)
-   0327   b2            		PHI R2			; cargo el valor de D a R2 (para la subrutina)
-   0328   d8            		SEP R8			; llamo a la SUB que transmite lo que está en R2
-   0329   da            		SEP RA			; llamo a la SUB DELAY2
-   032a   da            		SEP RA			; llamo a la SUB DELAY2
-   032b   da            		SEP RA			; llamo a la SUB DELAY2
-   032c   f8 0a         		LDI 10D			; caracter ascii  (line feed)
-   032e   b2            		PHI R2			; cargo el valor de D a R2 (para la subrutina)
-   032f   d8            		SEP R8			; llamo a la SUB que transmite lo que está en R2
-   0330   da            		SEP RA			; llamo a la SUB DELAY2
-   0331   da            		SEP RA			; llamo a la SUB DELAY2
-   0332   da            		SEP RA			; llamo a la SUB DELAY2
-   0333   30 13         		BR LOOP			; salto incondicional
+   0323   f8 0d         		LDI 13D			; caracter ascii CR (carriage return)
+   0325   b2            		PHI R2			; cargo el valor de D a R2 (para la subrutina)
+   0326   d8            		SEP R8			; llamo a la SUB que transmite lo que está en R2
+   0327   da            		SEP RA			; llamo a la SUB DELAY2
+   0328   f8 0a         		LDI 10D			; caracter ascii  (line feed)
+   032a   b2            		PHI R2			; cargo el valor de D a R2 (para la subrutina)
+   032b   d8            		SEP R8			; llamo a la SUB que transmite lo que está en R2
+   032c   da            		SEP RA			; llamo a la SUB DELAY2
+   032d   30 13         		BR LOOP			; salto incondicional
                         
                         
                         ;---------subrutina de trasmisión de datos-------------------------
@@ -128,7 +122,7 @@
    0345   a3            		PLO R3		; carga el valor de D en R3.0 (este es el contador para iterar cada bit del dato en R2)
                         					; tiene que ser la parte baja de R3, porque DEC R3 decrementa el registro entero de 16 bits
    0346   92            SHIFT	GHI R2		; carga el valor de R2.1 en D (acá se supone que está el byte que queremos transmitir)
-   0347   fe            		SHL			; desplaza D a la izquierda, cargando el MSB en el bit DF
+   0347   f6            		SHR			; desplaza D a la izquierda, cargando el MSB en el bit DF
    0348   b2            		PHI R2		; carga el valor de D en R2.1
    0349   3b 4d         		BNF ESCERO	; salta si DF = 0
    034b   7b            		SEQ			; salida Q igual a 1
@@ -151,11 +145,11 @@
    035f                 		ORG  0035FH		; se le sumó 0300H porque el código empieza allí
    035f   d8            BACK2	SEP R8			; retorna a subrutina de transmisión 1-Byte	2-Machine Cycles	1 time
    0360                 DELAY1
-   0360   f8 50         		LDI  050H		; carga el valor inmediato en D		2-Byte	2-Machine Cycles	1 time
-   0362   b1            		PHI  R1			; carga el valor de D en R1.1		1-Byte	2-Machine Cycles	1 time
+   0360   f8 7b         		LDI  123D		; carga el valor inmediato en D		2-Byte	2-Machine Cycles	1 time
+   0362   a1            		PLO  R1			; carga el valor de D en R1.0		1-Byte	2-Machine Cycles	1 time
    0363                 TIMER1
    0363   21            		DEC  R1     	; decrementa R1						1-Byte	2-Machine Cycles	R1 times
-   0364   91            		GHI  R1     	; carga la parte alta de R1 en D	1-Byte	2-Machine Cycles	R1 times
+   0364   81            		GLO  R1     	; carga la parte baja de R1 en D	1-Byte	2-Machine Cycles	R1 times
    0365   3a 63         		BNZ  TIMER1   	; salta si D != 0					2-Byte	2-Machine Cycles	R1 times
    0367   30 5f         		BR   BACK2		; salto incondicional				2-Byte	2-Machine Cycles	1 time
                         
@@ -164,7 +158,7 @@
    036f                 		ORG  0036FH		; se le sumó 0300H porque el código empieza allí
    036f   d0            BACK3	SEP R0			; retorna a la rutina principal
    0370                 DELAY2
-   0370   f8 ff         		LDI  0FFH		; carga el valor inmediato en D
+   0370   f8 50         		LDI  050H		; carga el valor inmediato en D
    0372   b1            		PHI  R1			; carga el valor de D en R1.1
    0373                 TIMER2
    0373   21            		DEC  R1     	; decrementa R1

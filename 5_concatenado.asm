@@ -87,16 +87,14 @@ INICIO				; esta parte son solo definiciones
 ;acá está la rutina principal
 		SEQ				; empezamos ponindo la línea estado inactivo
 LOOP	LDI 65D			; caracter ascii A (mayúscula)
-		PHI R4			; cargo el valor de D a R4 (para tener guardado el último caracter enviado)
+		PLO R4			; cargo el valor de D a R4 (para tener guardado el último caracter enviado)
 		PHI R2			; cargo el valor de D a R2 (para la subrutina)
 		LDI 07H			; cargo 7 en D
 		PLO R5			; cargo D en R5.0 (para hacer 7 repeticiones en la rutina SEND)
 SEND	SEP R8			; llamo a la SUB que transmite lo que está en R2
 		SEP RA			; llamo a la SUB DELAY2
-		SEP RA			; llamo a la SUB DELAY2
-		SEP RA			; llamo a la SUB DELAY2
 		INC R4			; incremento R4 (paso al siguiente caracter)
-		GHI R4			; carga R4.1 en D
+		GLO R4			; carga R4.0 en D
 		PHI R2			; carga D en R2.1
 		DEC R5			; decremento R5
 		GLO R5			; carga la parte baja de R3 en D
@@ -106,13 +104,9 @@ SEND	SEP R8			; llamo a la SUB que transmite lo que está en R2
 		PHI R2			; cargo el valor de D a R2 (para la subrutina)
 		SEP R8			; llamo a la SUB que transmite lo que está en R2
 		SEP RA			; llamo a la SUB DELAY2
-		SEP RA			; llamo a la SUB DELAY2
-		SEP RA			; llamo a la SUB DELAY2
 		LDI 10D			; caracter ascii  (line feed)
 		PHI R2			; cargo el valor de D a R2 (para la subrutina)
 		SEP R8			; llamo a la SUB que transmite lo que está en R2
-		SEP RA			; llamo a la SUB DELAY2
-		SEP RA			; llamo a la SUB DELAY2
 		SEP RA			; llamo a la SUB DELAY2
 		BR LOOP			; salto incondicional
 
@@ -128,7 +122,7 @@ TRANSM
 		PLO R3		; carga el valor de D en R3.0 (este es el contador para iterar cada bit del dato en R2)
 					; tiene que ser la parte baja de R3, porque DEC R3 decrementa el registro entero de 16 bits
 SHIFT	GHI R2		; carga el valor de R2.1 en D (acá se supone que está el byte que queremos transmitir)
-		SHL			; desplaza D a la izquierda, cargando el MSB en el bit DF
+		SHR			; desplaza D a la derecha, cargando el LSB en el bit DF
 		PHI R2		; carga el valor de D en R2.1
 		BNF ESCERO	; salta si DF = 0
 		SEQ			; salida Q igual a 1
@@ -151,11 +145,11 @@ ESCERO	REQ			; salida Q igual a 0
 		ORG  0035FH		; se le sumó 0300H porque el código empieza allí
 BACK2	SEP R8			; retorna a subrutina de transmisión 1-Byte	2-Machine Cycles	1 time
 DELAY1
-		LDI  050H		; carga el valor inmediato en D		2-Byte	2-Machine Cycles	1 time
-		PHI  R1			; carga el valor de D en R1.1		1-Byte	2-Machine Cycles	1 time
+		LDI  123D		; carga el valor inmediato en D		2-Byte	2-Machine Cycles	1 time
+		PLO  R1			; carga el valor de D en R1.0		1-Byte	2-Machine Cycles	1 time
 TIMER1
 		DEC  R1     	; decrementa R1						1-Byte	2-Machine Cycles	R1 times
-		GHI  R1     	; carga la parte alta de R1 en D	1-Byte	2-Machine Cycles	R1 times
+		GLO  R1     	; carga la parte baja de R1 en D	1-Byte	2-Machine Cycles	R1 times
 		BNZ  TIMER1   	; salta si D != 0					2-Byte	2-Machine Cycles	R1 times
 		BR   BACK2		; salto incondicional				2-Byte	2-Machine Cycles	1 time
 
@@ -164,7 +158,7 @@ TIMER1
 		ORG  0036FH		; se le sumó 0300H porque el código empieza allí
 BACK3	SEP R0			; retorna a la rutina principal
 DELAY2
-		LDI  0FFH		; carga el valor inmediato en D
+		LDI  050H		; carga el valor inmediato en D
 		PHI  R1			; carga el valor de D en R1.1
 TIMER2
 		DEC  R1     	; decrementa R1
