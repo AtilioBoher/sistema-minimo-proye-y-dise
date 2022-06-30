@@ -117,7 +117,7 @@ BACK1	SEP R0		; retorna a la subrutina principal
 TRANSM
 		SEQ			; Q = 1 (línea en estado inactivo)
 		REQ  		; Q = 0 (bit de start)
-		SEP R9		; llamar subrutina de demora de 3,33 ms
+		SEP R9		; llamar subrutina de demora de 1 bit-time
 		LDI 08H		; carga el valor inmediato en D
 		PLO R3		; carga el valor de D en R3.0 (este es el contador para iterar cada bit del dato en R2)
 					; tiene que ser la parte baja de R3, porque DEC R3 decrementa el registro entero de 16 bits
@@ -128,12 +128,12 @@ SHIFT	GHI R2		; carga el valor de R2.1 en D (acá se supone que está el byte qu
 		SEQ			; salida Q igual a 1
 		SKP			; salta la siguiente instrucción de manera incondicional
 ESCERO	REQ			; salida Q igual a 0
-		SEP R9		; llamar subrutina de demora de 3,33 ms
+		SEP R9		; llamar subrutina de demora de 1 bit-time
 		DEC R3		; decremento el contador
 		GLO R3		; carga la parte baja de R3 en D
 		BNZ SHIFT	; salta si D != 0
 		SEQ			; Q = 1 (bit de stop) (el ingeniero Korpys dijo que ponga dos bits de stop (dos bit-time))
-		SEP R9		; llamar subrutina de demora de 3,33 ms dos veces
+		SEP R9		; llamar subrutina de demora de 1 bit-time dos veces
 		SEP R9
 		BR BACK1	; salto incondicional
 

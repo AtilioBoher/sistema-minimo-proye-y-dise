@@ -94,7 +94,7 @@
    031a   d8            SEND	SEP R8			; llamo a la SUB que transmite lo que está en R2
    031b   da            		SEP RA			; llamo a la SUB DELAY2
    031c   14            		INC R4			; incremento R4 (paso al siguiente caracter)
-   031d   84            		GLO R4			; carga R4.1 en D
+   031d   84            		GLO R4			; carga R4.0 en D
    031e   b2            		PHI R2			; carga D en R2.1
    031f   25            		DEC R5			; decremento R5
    0320   85            		GLO R5			; carga la parte baja de R3 en D
@@ -122,7 +122,7 @@
    0345   a3            		PLO R3		; carga el valor de D en R3.0 (este es el contador para iterar cada bit del dato en R2)
                         					; tiene que ser la parte baja de R3, porque DEC R3 decrementa el registro entero de 16 bits
    0346   92            SHIFT	GHI R2		; carga el valor de R2.1 en D (acá se supone que está el byte que queremos transmitir)
-   0347   f6            		SHR			; desplaza D a la izquierda, cargando el MSB en el bit DF
+   0347   f6            		SHR			; desplaza D a la derecha, cargando el LSB en el bit DF
    0348   b2            		PHI R2		; carga el valor de D en R2.1
    0349   3b 4d         		BNF ESCERO	; salta si DF = 0
    034b   7b            		SEQ			; salida Q igual a 1
