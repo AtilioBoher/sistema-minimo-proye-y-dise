@@ -23,23 +23,27 @@ RC		EQU 12
 RD		EQU 13
 RE		EQU 14
 RF		EQU 15
+; Subroutines name definitions
+TX		EQU 8
+DLY1	EQU 9
+DLY2	EQU 10
 
 ; Start code segment
 
 ; antes de empezar suponemos que el dato a enviar está cargado en el registro R2.1 (porque R0 es el contador de programa)
 INICIO				; esta parte son solo definiciones
 		LDI 00H
-		PHI R8
+		PHI TX
 		LDI 40H
-		PLO R8		; se cargó 0040H en R8, que es la SUB de transmisión
+		PLO TX		; se cargó 0040H en TX = R8, que es la SUB de transmisión
 		LDI 00H
-		PHI R9
+		PHI DLY1
 		LDI 60H
-		PLO R9		; se cargó 0060H en R9, que es la SUB de DELAY1 (para la SUB de transmisión)
+		PLO DLY1	; se cargó 0060H en DLY1 = R9, que es la SUB de DELAY1 (para la SUB de transmisión)
 		LDI 00H
-		PHI RA
+		PHI DLY2
 		LDI 70H
-		PLO RA		; se cargó 0070H en RA, que es la SUB de DELAY2 (para el programa principal)
+		PLO DLY2	; se cargó 0070H en DLY2 = RA, que es la SUB de DELAY2 (para el programa principal)
 ;acá está la rutina principal
 		SEQ				; empezamos ponindo la línea estado inactivo
 LOOP	LDI 65D			; caracter ascii A (mayúscula)
@@ -47,8 +51,8 @@ LOOP	LDI 65D			; caracter ascii A (mayúscula)
 		PHI R2			; cargo el valor de D a R2 (para la subrutina)
 		LDI 07H			; cargo 7 en D
 		PLO R5			; cargo D en R5.0 (para hacer 7 repeticiones en la rutina SEND)
-SEND	SEP R8			; llamo a la SUB que transmite lo que está en R2
-		SEP RA			; llamo a la SUB DELAY2
+SEND	SEP TX			; llamo a la SUB que transmite lo que está en R2
+		SEP DLY2		; llamo a la SUB DELAY2
 		INC R4			; incremento R4 (paso al siguiente caracter)
 		GLO R4			; carga R4.0 en D
 		PHI R2			; carga D en R2.1
@@ -58,12 +62,12 @@ SEND	SEP R8			; llamo a la SUB que transmite lo que está en R2
 	; envio CRLF para hacer el salto de línea
 		LDI 13D			; caracter ascii CR (carriage return)
 		PHI R2			; cargo el valor de D a R2 (para la subrutina)
-		SEP R8			; llamo a la SUB que transmite lo que está en R2
-		SEP RA			; llamo a la SUB DELAY2
+		SEP TX			; llamo a la SUB que transmite lo que está en R2
+		SEP DLY2		; llamo a la SUB DELAY2
 		LDI 10D			; caracter ascii  (line feed)
 		PHI R2			; cargo el valor de D a R2 (para la subrutina)
-		SEP R8			; llamo a la SUB que transmite lo que está en R2
-		SEP RA			; llamo a la SUB DELAY2
+		SEP TX			; llamo a la SUB que transmite lo que está en R2
+		SEP DLY2		; llamo a la SUB DELAY2
 		BR LOOP			; salto incondicional
 
 
@@ -73,7 +77,7 @@ BACK1	SEP R0		; retorna a la subrutina principal
 TRANSM
 		SEQ			; Q = 1 (línea en estado inactivo)
 		REQ  		; Q = 0 (bit de start)
-		SEP R9		; llamar subrutina de demora de 1 bit-time
+		SEP DLY1	; llamar subrutina de demora de 1 bit-time
 		LDI 08H		; carga el valor inmediato en D
 		PLO R3		; carga el valor de D en R3.0 (este es el contador para iterar cada bit del dato en R2)
 					; tiene que ser la parte baja de R3, porque DEC R3 decrementa el registro entero de 16 bits
@@ -84,13 +88,13 @@ SHIFT	GHI R2		; carga el valor de R2.1 en D (acá se supone que está el byte qu
 		SEQ			; salida Q igual a 1
 		SKP			; salta la siguiente instrucción de manera incondicional
 ESCERO	REQ			; salida Q igual a 0
-		SEP R9		; llamar subrutina de demora de 1 bit-time
+		SEP DLY1	; llamar subrutina de demora de 1 bit-time
 		DEC R3		; decremento el contador
 		GLO R3		; carga la parte baja de R3 en D
 		BNZ SHIFT	; salta si D != 0
 		SEQ			; Q = 1 (bit de stop) (el ingeniero Korpys dijo que ponga dos bits de stop (dos bit-time))
-		SEP R9		; llamar subrutina de demora de 1 bit-time dos veces
-		SEP R9
+		SEP DLY1	; llamar subrutina de demora de 1 bit-time dos veces
+		SEP DLY1
 		BR BACK1	; salto incondicional
 
 
@@ -99,7 +103,7 @@ ESCERO	REQ			; salida Q igual a 0
 
 ;---------subrutina de ratardo de tranmisión-------------------------
 		ORG  0005FH
-BACK2	SEP R8			; retorna a subrutina de transmisión 1-Byte	2-Machine Cycles	1 time
+BACK2	SEP TX			; retorna a subrutina de transmisión 1-Byte	2-Machine Cycles	1 time
 DELAY1
 		LDI  123D		; carga el valor inmediato en D		2-Byte	2-Machine Cycles	1 time
 		PLO  R1			; carga el valor de D en R1.1		1-Byte	2-Machine Cycles	1 time
