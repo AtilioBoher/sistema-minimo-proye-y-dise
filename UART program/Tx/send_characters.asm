@@ -25,8 +25,10 @@ RE		EQU 14
 RF		EQU 15
 ; Subroutines name definitions
 TX		EQU 8
-DLY1	EQU 9
-DLY2	EQU 10
+DLY1	EQU 9		; DELAY1 es un delay corto
+DLY2	EQU 10		; DELAY2 es un delay largo
+CONT1BT	EQU 123D	; contador para el delay de 1 bit-time
+CONTLONG	EQU 050H	; contador para el delay largo (delay 2)
 
 ; Start code segment
 
@@ -105,7 +107,7 @@ ESCERO	REQ			; salida Q igual a 0
 		ORG  0005FH
 BACK2	SEP TX			; retorna a subrutina de transmisión 1-Byte	2-Machine Cycles	1 time
 DELAY1
-		LDI  123D		; carga el valor inmediato en D		2-Byte	2-Machine Cycles	1 time
+		LDI  CONT1BT	; carga el valor inmediato en D		2-Byte	2-Machine Cycles	1 time
 		PLO  R1			; carga el valor de D en R1.1		1-Byte	2-Machine Cycles	1 time
 TIMER1
 		DEC  R1     	; decrementa R1						1-Byte	2-Machine Cycles	R1 times
@@ -118,7 +120,7 @@ TIMER1
 		ORG  0006FH
 BACK3	SEP R0			; retorna a la rutina principal
 DELAY2
-		LDI  050H		; carga el valor inmediato en D
+		LDI  CONTLONG	; carga el valor inmediato en D
 		PHI  R1			; carga el valor de D en R1.1
 TIMER2
 		DEC  R1     	; decrementa R1
