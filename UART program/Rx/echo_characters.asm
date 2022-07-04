@@ -24,9 +24,11 @@ RD		EQU 13
 RE		EQU 14
 RF		EQU 15
 ; Subroutines name definitions
+RX		EQU	7
 TX		EQU 8
 DLY1	EQU 9		; DELAY1 es un delay corto
 DLY2	EQU 10		; DELAY2 es un delay largo
+CONT1DOT5BT	EQU	185D	; contador para un bit-time y medio
 CONT1BT	EQU 123D	; contador para el delay de 1 bit-time
 CONTLONG	EQU 050H	; contador para el delay largo (delay 2)
 
@@ -36,15 +38,15 @@ CONTLONG	EQU 050H	; contador para el delay largo (delay 2)
 INICIO				; esta parte son solo definiciones
 		LDI 00H
 		PHI TX
-		LDI 40H
+		LDI 0B0H
 		PLO TX		; se cargó 0040H en TX = R8, que es la SUB de transmisión
 		LDI 00H
 		PHI DLY1
-		LDI 60H
+		LDI 0E0H
 		PLO DLY1	; se cargó 0060H en DLY1 = R9, que es la SUB de DELAY1 (para la SUB de transmisión)
 		LDI 00H
 		PHI DLY2
-		LDI 70H
+		LDI 0F0H
 		PLO DLY2	; se cargó 0070H en DLY2 = RA, que es la SUB de DELAY2 (para el programa principal)
 ;acá está la rutina principal
 		SEQ				; empezamos ponindo la línea estado inactivo
@@ -74,7 +76,7 @@ SEND	SEP TX			; llamo a la SUB que transmite lo que está en R2
 
 
 ;---------subrutina de trasmisión de datos-------------------------
-		ORG  0003FH
+		ORG  000AFH
 BACK1	SEP R0		; retorna a la subrutina principal
 TRANSM
 		SEQ			; Q = 1 (línea en estado inactivo)
@@ -101,14 +103,22 @@ ESCERO	REQ			; salida Q igual a 0
 
 
 
+;---------subrutina de ratardo de recepción-------------------------
+		ORG  000CFH
+BACK4	SEP RX			; retorna a subrutina de transmisión 1-Byte	2-Machine Cycles	1 time
+TIMER3
+		DEC  R1     	; decrementa R1						1-Byte	2-Machine Cycles	R1 times
+		GLO  R1     	; carga la parte alta de R1 en D	1-Byte	2-Machine Cycles	R1 times
+		BNZ  TIMER3   	; salta si D != 0					2-Byte	2-Machine Cycles	R1 times
+		BR   BACK4		; salto incondicional				2-Byte	2-Machine Cycles	1 time
 
 
 ;---------subrutina de ratardo de tranmisión-------------------------
-		ORG  0005FH
+		ORG  000DFH
 BACK2	SEP TX			; retorna a subrutina de transmisión 1-Byte	2-Machine Cycles	1 time
 DELAY1
 		LDI  CONT1BT	; carga el valor inmediato en D		2-Byte	2-Machine Cycles	1 time
-		PLO  R1			; carga el valor de D en R1.1		1-Byte	2-Machine Cycles	1 time
+		PLO  R1			; carga el valor de D en R1.0		1-Byte	2-Machine Cycles	1 time
 TIMER1
 		DEC  R1     	; decrementa R1						1-Byte	2-Machine Cycles	R1 times
 		GLO  R1     	; carga la parte alta de R1 en D	1-Byte	2-Machine Cycles	R1 times
@@ -117,7 +127,7 @@ TIMER1
 
 
 ;---------subrutina de retardo del programa principal-------------------------
-		ORG  0006FH
+		ORG  000EFH
 BACK3	SEP R0			; retorna a la rutina principal
 DELAY2
 		LDI  CONTLONG	; carga el valor inmediato en D
